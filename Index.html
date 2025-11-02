@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stylish Name Maker By Mr Jin</title>
+    <!-- Tailwind CSS CDN for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; /* Light blue-gray background */
+        }
+        /* Stylish input focus */
+        #input-text:focus {
+            box-shadow: 0 0 0 3px rgba(109, 40, 217, 0.4); /* Tailwind's indigo-600 with opacity */
+        }
+        .copy-button {
+            transition: all 0.2s;
+            white-space: nowrap; /* Prevent button text from wrapping */
+        }
+        .copy-button:hover {
+            background-color: #6d28d9; /* Indigo 700 */
+        }
+        .copy-button:active {
+            transform: scale(0.98);
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-4xl mx-auto bg-white p-6 md:p-10 rounded-3xl shadow-2xl border-t-[10px] border-indigo-600">
+        
+        <!-- Header -->
+        <header class="text-center mb-8 md:mb-12">
+            <h1 class="text-3xl md:text-5xl font-extrabold text-gray-900 mb-2 leading-tight">
+                <span class="text-indigo-600">Stylish</span> Name Maker
+            </h1>
+            <p class="text-lg text-gray-500 font-medium">By Mr Jin</p>
+        </header>
+
+        <!-- Input Section -->
+        <div class="mb-8">
+            <label for="input-text" class="block text-xl font-semibold text-gray-700 mb-3">
+                1. Type Your Name or Text Here:
+            </label>
+            <input 
+                type="text" 
+                id="input-text" 
+                placeholder="E.g., Mr Jin, Awesome Name, Unicode Magic..." 
+                class="w-full p-4 border-4 border-gray-200 rounded-xl text-xl font-mono focus:border-indigo-500 outline-none transition duration-300" 
+                maxlength="80"
+            >
+            <p id="char-count" class="text-sm text-gray-500 mt-2 text-right">0/80 Characters</p>
+        </div>
+
+        <!-- Output Section -->
+        <div id="output-container">
+            <h2 class="text-2xl font-bold text-gray-700 mb-6 border-b pb-3">2. Generated Stylish Names (Click to Copy):</h2>
+            <div id="stylish-results" class="space-y-4">
+                <p class="text-gray-500 text-center py-8">Start typing in the box above to see stylish fonts appear here.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white mt-12 py-6">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <p class="text-sm mb-4">
+                &copy; 2025 Stylish Name Maker. Developed with <span class="text-red-500">❤️</span> by Mr Jin
+            </p>
+            <!-- WhatsApp Channel Button -->
+            <a href="https://whatsapp.com/channel/0029Vb6X8HpJpe8mDbmjuH1k" 
+               target="_blank" 
+               class="inline-flex items-center bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-full shadow-lg transition duration-300 transform hover:scale-105">
+                <!-- WhatsApp Icon (Inline SVG) -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16" class="mr-2">
+                    <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.518.064 7.846c0 1.458.332 2.868.966 4.125l-1.01 3.739 3.84-1.04a7.863 7.863 0 0 0 3.712.92h.004c4.364 0 7.927-3.518 7.93-7.846.002-2.09-.817-4.108-2.326-5.617zM11.83 11.23a.585.585 0 0 1-.41.312c-.114.032-.236.05-.357.05-.187 0-.368-.046-.532-.138l-.666-.394a1.01 1.01 0 0 1-.308-.216c-.053-.06-.118-.124-.165-.18a.148.148 0 0 0-.026-.035c-.714-.858-1.503-1.89-2.096-2.585a4.01 4.01 0 0 1-.502-.67c-.033-.062-.066-.123-.105-.175-.027-.035-.06-.07-.09-.105-.1-.13-.21-.264-.316-.388a.59.59 0 0 1-.164-.265c-.07-.156-.12-.315-.12-.486 0-.27.085-.526.24-.712.155-.186.41-.29.702-.29.117 0 .23.02.333.058.106.038.21.09.308.16l.338.27.02.016c.036.03.076.06.113.088l.05.034c.05.032.096.06.14.088.08.05.158.102.23.16.14.116.27.24.39.362.06.06.114.12.16.18.04.05.078.1.112.15l.08.12.016.023c.045.07.09.14.13.206.107.19.2.39.27.6.027.08.05.16.07.23.018.07.03.14.04.21.01.07.014.14.014.21.002.16-.032.316-.098.468z"/>
+                </svg>
+                My WhatsApp Channel
+            </a>
+        </div>
+    </footer>
+
+
+    <!-- Toast Message for Copying -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-green-600 text-white px-6 py-3 rounded-xl shadow-xl transition-opacity duration-300 opacity-0 pointer-events-none z-50 font-semibold">
+        Copied Successfully!
+    </div>
+
+    <script>
+        // --- Unicode Font Mappings (The core logic for styling) ---
+        // These are base code points for various Unicode math/text blocks.
+        const mapData = {
+            'bold': [0x1D5D4, 0x1D400, 0x1D41A], // A-Z, a-z
+            'italic': [0x1D608, 0x1D434, 0x1D44E],
+            'boldItalic': [0x1D63C, 0x1D468, 0x1D482],
+            'script': [0x1D49C, 0x1D4B6, 0x1D4D0],
+            'boldScript': [0x1D4D4, 0x1D4EE, 0x1D508],
+            'fraktur': [0x1D56C, 0x1D586, 0x1D5A0],
+            'boldFraktur': [0x1D5EE, 0x1D5C2, 0x1D5D5], 
+            'doubleStruck': [0x1D538, 0x1D552, 0x1D56C], // Numbers included in the converter
+            'monospace': [0x1D670, 0x1D68A, 0x1D6A4],
+            'circ': [0x24B6, 0x24D0], // Circled A-Z, a-z (limited range)
+        };
+
+        const baseA = 'A'.charCodeAt(0);
+        const baseZ = 'Z'.charCodeAt(0);
+        const basea = 'a'.charCodeAt(0);
+        const basez = 'a'.charCodeAt(0) + 25; // 25 letters after 'a'
+        const base0 = '0'.charCodeAt(0);
+        const base9 = '9'.charCodeAt(0);
+
+        // Creates a function to convert a character based on a given Unicode map
+        function createConverter(mapName) {
+            const [offsetBase, offsetCaps, offsetLower] = mapData[mapName] || [];
+            
+            return (char) => {
+                const charCode = char.charCodeAt(0);
+                
+                // Capital letters (A-Z)
+                if (charCode >= baseA && charCode <= baseZ) {
+                    // Specific handling for Bold Fraktur Z: 0x1D5D5 is not where Z should be, need to check for Z
+                    if (mapName === 'boldFraktur' && char === 'Z') {
+                        return String.fromCodePoint(0x1D5EB); // Specific Unicode point for Bold Fraktur Z
+                    }
+                    return String.fromCodePoint(charCode - baseA + offsetCaps);
+                }
+                
+                // Lowercase letters (a-z)
+                if (charCode >= basea && charCode <= basez) {
+                    return String.fromCodePoint(charCode - basea + offsetLower);
+                }
+                
+                // Digits (0-9) - Only Double Struck has a full set of numbers
+                if (mapName === 'doubleStruck' && charCode >= base0 && charCode <= base9) {
+                    return String.fromCodePoint(charCode - base0 + 0x1D7D8);
+                }
+                
+                // Fallback for Circled (only works for A-Z, a-z)
+                if (mapName === 'circ') {
+                    if (charCode >= baseA && charCode <= baseZ) {
+                        return String.fromCodePoint(charCode - baseA + 0x24B6);
+                    }
+                    if (charCode >= basea && charCode <= basez) {
+                        return String.fromCodePoint(charCode - basea + 0x24D0);
+                    }
+                }
+                
+                // Return original character if no mapping is found
+                return char;
+            };
+        }
+
+        // Font Configuration and Display Names
+        const fontConfigs = [
+            { name: "👑 Bold Serif", map: createConverter('bold'), classes: "font-bold text-gray-900" },
+            { name: "✨ Double Struck (Outline)", map: createConverter('doubleStruck'), classes: "text-blue-700" },
+            { name: "✍️ Script", map: createConverter('script'), classes: "italic text-pink-600" },
+            { name: "🖤 Fraktur / Gothic", map: createConverter('fraktur'), classes: "text-purple-700" },
+            { name: "🔗 Monospace (Typewriter)", map: createConverter('monospace'), classes: "font-mono text-teal-700" },
+            { name: "💫 Bold Italic", map: createConverter('boldItalic'), classes: "font-extrabold italic text-red-600" },
+            { name: "⭕ Circled Letters", map: createConverter('circ'), classes: "text-orange-600" },
+            { name: "🔥 Bold Fraktur", map: createConverter('boldFraktur'), classes: "font-bold text-green-700" },
+            { name: "🖋️ Italic", map: createConverter('italic'), classes: "italic text-indigo-700" },
+        ];
+        
+        const inputTextElement = document.getElementById('input-text');
+        const resultsContainer = document.getElementById('stylish-results');
+        const charCountElement = document.getElementById('char-count');
+        const toastElement = document.getElementById('toast');
+
+        // --- Core Rendering Logic ---
+        function renderStylishText(text) {
+            resultsContainer.innerHTML = ''; // Clear previous results
+
+            if (text.trim() === '') {
+                resultsContainer.innerHTML = '<p class="text-gray-500 text-center py-8">Start typing in the box above to see stylish fonts appear here.</p>';
+                return;
+            }
+
+            fontConfigs.forEach(config => {
+                let styledText = '';
+                for (const char of text) {
+                    styledText += config.map(char);
+                }
+
+                // Create the result card
+                const card = document.createElement('div');
+                card.className = 'flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-gray-50 rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition duration-200';
+                
+                // Text Display Container
+                const textContainer = document.createElement('div');
+                textContainer.className = 'w-full sm:w-4/5 pr-4';
+
+                // Style Name Label
+                const styleLabel = document.createElement('span');
+                styleLabel.className = 'block text-xs text-indigo-500 font-bold mb-1';
+                styleLabel.textContent = config.name;
+                
+                // Text Display
+                const textDisplay = document.createElement('p');
+                textDisplay.className = `text-lg md:text-xl break-words ${config.classes}`;
+                textDisplay.textContent = styledText;
+
+                textContainer.appendChild(styleLabel);
+                textContainer.appendChild(textDisplay);
+
+                // Copy Button
+                const copyButton = document.createElement('button');
+                copyButton.className = 'copy-button mt-3 sm:mt-0 px-5 py-2 text-sm font-semibold bg-indigo-600 text-white rounded-lg shadow-md hover:bg-indigo-700 transition duration-200 flex items-center justify-center';
+                copyButton.innerHTML = `<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3"></path></svg> Copy`;
+                
+                // Copy Logic
+                copyButton.onclick = () => copyToClipboard(styledText, copyButton);
+
+                // Append elements to card
+                card.appendChild(textContainer);
+                card.appendChild(copyButton);
+
+                resultsContainer.appendChild(card);
+            });
+        }
+
+        // --- Utility Functions ---
+
+        // Function to copy text to clipboard
+        function copyToClipboard(textToCopy, button) {
+            // Using modern clipboard API if available, fall back to execCommand
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    showToast(button);
+                }).catch(err => {
+                    console.error('Copy failed:', err);
+                    fallbackCopy(textToCopy, button);
+                });
+            } else {
+                fallbackCopy(textToCopy, button);
+            }
+        }
+
+        // Fallback for older browsers
+        function fallbackCopy(textToCopy, button) {
+            const tempInput = document.createElement('textarea');
+            tempInput.value = textToCopy;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            showToast(button);
+        }
+
+        // Show Toast Notification
+        function showToast(button) {
+            toastElement.classList.remove('opacity-0', 'pointer-events-none');
+            toastElement.classList.add('opacity-100');
+
+            // Temporarily change button text/icon for feedback
+            const originalHTML = button.innerHTML;
+            button.innerHTML = '<svg class="w-4 h-4 mr-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Copied!';
+            
+            setTimeout(() => {
+                toastElement.classList.add('opacity-0', 'pointer-events-none');
+                toastElement.classList.remove('opacity-100');
+                button.innerHTML = originalHTML; // Restore original button text
+            }, 2000);
+        }
+
+        // --- Event Listener ---
+        inputTextElement.addEventListener('input', function() {
+            const currentText = this.value;
+            const length = currentText.length;
+            
+            // Update character count
+            charCountElement.textContent = `${length}/80 Characters`;
+
+            // Render the stylish text
+            renderStylishText(currentText);
+        });
+
+        // Initialize on load
+        window.onload = function() {
+            renderStylishText(inputTextElement.value);
+        }
+    </script>
+</body>
+</html>
